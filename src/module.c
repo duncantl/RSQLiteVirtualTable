@@ -4,12 +4,14 @@ SQLITE_EXTENSION_INIT1
 #include <Rdefines.h>
 
 const char * const
-R_getCreateTableStr(SEXP df)
+R_getCreateTableStr(SEXP df, const char * const tblName)
 {
     SEXP e, ans;
-    PROTECT(e = allocVector(LANGSXP, 2));
+    PROTECT(e = allocVector(LANGSXP, 3));
     SETCAR(e, Rf_install("mkCreateTableString"));
     SETCAR(CDR(e), df);
+    SETCAR(CDR(CDR(e)), ScalarString(mkChar(tblName)));
+
     int err = 0;
     PROTECT(ans = R_tryEval(e, R_GlobalEnv, &err));
     if(err) {
@@ -55,7 +57,7 @@ int rdfmCreate(sqlite3 *db,  void *pAux,  int argc, const char *const*argv,
 	pNew->numCols = Rf_length(pNew->df);
         pNew->numRows = Rf_length(VECTOR_ELT(pNew->df, 0));
 
-	const char * const createTableStr = R_getCreateTableStr((SEXP) pAux);
+	const char * const createTableStr = R_getCreateTableStr((SEXP) pAux, argv[2]);
 	sqlite3_declare_vtab(db, createTableStr);
     }
 
@@ -270,7 +272,7 @@ R_create_df_module(SEXP r_db, SEXP r_name, SEXP data)
 
 
 
-int sqlite3_module_init(
+int sqlite3_extension_init(
   sqlite3 *db, 
   char **pzErrMsg, 
   const sqlite3_api_routines *pApi
