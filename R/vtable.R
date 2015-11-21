@@ -10,6 +10,8 @@ rsqliteVTable =
 function(db, data, name = substitute(data), ..., .args = list(...),
          .createTable = TRUE)
 {
+    sqliteExtension(db, pkg = "RSQLiteVirtualTable")
+    
     name = paste(as.character(name), collapse = "")
     ans = .Call("R_create_df_module", db@Id, name, data)
     if(ans == 0) {
@@ -25,8 +27,9 @@ function(db, data, name = substitute(data), ..., .args = list(...),
             ans = dbGetQuery(db, query)
             if(!is.null(ans))
                warning("problem creating the virtual table")
+        }
     } else
       warning("problem creating the module for virtual table")
-    
+
     ans
 }
