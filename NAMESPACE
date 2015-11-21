@@ -1,0 +1,7 @@
+useDynLib(RSQLiteVirtualTable)
+import(RSQLite)
+import(RSQLiteUDF)
+
+export(mkCreateTableString)
+export(rsqliteVTable)
+
