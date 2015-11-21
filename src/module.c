@@ -15,10 +15,9 @@ R_getCreateTableStr(SEXP df, const char * const tblName)
     int err = 0;
     PROTECT(ans = R_tryEval(e, R_GlobalEnv, &err));
     if(err) {
-	printf("Problem calling mkCreateTableString\n");
-	return SQLITE_ERROR;
+	return NULL;
     }
-Rf_PrintValue(ans);
+
     const char * const str = CHAR(STRING_ELT(ans, 0));
     UNPROTECT(2);
     return(strdup(str));
@@ -45,7 +44,6 @@ int rdfmCreate(sqlite3 *db,  void *pAux,  int argc, const char *const*argv,
     rdfm_vtab *pNew = 0;
     int nDbName;
     const char *zDbName = argv[1];
-    const char *zTableName = argv[2];
     nDbName = (int)strlen(zDbName);
     pNew = sqlite3_malloc( sizeof(*pNew) + nDbName + 1);
 
@@ -103,7 +101,7 @@ int rdfmOpen(sqlite3_vtab *pVTab, sqlite3_vtab_cursor **ppCursor)
   pCur = sqlite3_malloc( sizeof(*pCur) );
   if( pCur==0 ) return SQLITE_NOMEM;
   memset(pCur, 0, sizeof(*pCur));
-  pCur->vtab = pVTab;
+  pCur->vtab = (rdfm_vtab *) pVTab;
   pCur->curRow = 0;
   *ppCursor = &pCur->base;
   return(SQLITE_OK);

@@ -7,7 +7,8 @@
   including connecting its rows to other tables in the database.
 }
 \usage{
-rsqliteVTable(db, data, name = substitute(data), ..., .args = list(...))
+rsqliteVTable(db, data, name = substitute(data), ..., .args = list(...),
+              .createTable = TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -19,6 +20,8 @@ rsqliteVTable(db, data, name = substitute(data), ..., .args = list(...))
     its behavior}
   \item{.args}{an alternative way to specify additional arguments,
     rather than \dots}
+  \item{.createTable}{logical value. If this is \code{TRUE}, we create
+    the virtual table. Otherwise, we just define the module.}
 }
 \details{
   This defines an SQL module  specific to this data frame and then
@@ -45,6 +48,7 @@ The RSQLite package.
 }
 \examples{
 data(mtcars)
+library(RSQLite)
 db = dbConnect(SQLite(), ":memory:")
 rsqliteVTable(db, mtcars)
 dbListTables(db)
