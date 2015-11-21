@@ -67,6 +67,7 @@ int rdfmCreate(sqlite3 *db,  void *pAux,  int argc, const char *const*argv,
     return rc;
 }
 
+/* We should probably not set this in the methods and so make the module and table eponymous.*/
 int rdfmConnect(sqlite3* db, void *pAux, int argc, const char *const*argv,
                 sqlite3_vtab **ppVTab, char**err)
 {
@@ -138,6 +139,9 @@ int rdfmEof(sqlite3_vtab_cursor *cur)
 }
 
 
+/* Add support for NAs and map them to NULL via sqlite3_result_null().
+
+   Also raw maps to blob. */
 int rdfmColumn(sqlite3_vtab_cursor *cur, sqlite3_context* ctxt, int i)
 {
   rdfm_cursor *pCur = (rdfm_cursor *)cur;
