@@ -1,6 +1,6 @@
 Version: 0.1-0
 Package: RSQLiteVirtualTable
-Title: Create virtual tables from R objects that can be used directly in an SQLite database
+Title: Create virtual tables from R Objects that can be Used Directly in an SQLite database
 Description: This is a mechanism to explore using virtual tables in SQLite from within R
   and providing the contents of an SQLite table via R objects, specifically, an R data frame.
   At its very simplest, this is a means of not having to explicitly import the data frame
@@ -12,8 +12,8 @@ Description: This is a mechanism to explore using virtual tables in SQLite from 
 Author: Duncan Temple Lang
 Maintainer: Duncan Temple Lang <duncan@r-project.org>
 License: BSD_3_clause
-Imports: RSQLite
-Depends: RSQLiteUDF
+Imports: RSQLite, RSQLiteUDF
+
 
 
 

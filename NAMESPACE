@@ -1,6 +1,6 @@
 useDynLib(RSQLiteVirtualTable)
 import(RSQLite)
-#import(RSQLiteUDF)
+import(RSQLiteUDF)
 
 export(mkCreateTableString)
 export(rsqliteVTable)
