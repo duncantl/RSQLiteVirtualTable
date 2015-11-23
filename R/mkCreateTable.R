@@ -35,5 +35,5 @@ function(obj)
           integer = "INTEGER",
           double =,
           numeric = "REAL",
-          character = sprintf("VARCHAR(%d)", max(nchar(obj))))
+          character = sprintf("VARCHAR(%d)", max(nchar(obj), na.rm = TRUE)))
 }
