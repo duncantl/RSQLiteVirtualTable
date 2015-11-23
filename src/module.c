@@ -74,6 +74,7 @@ int rdfmConnect(sqlite3* db, void *pAux, int argc, const char *const*argv,
 
 int rdfmBestIndex(sqlite3_vtab *pVTab, sqlite3_index_info* info)
 {
+//    printf("BestIndex: constraints %d\n", info->nConstraint);
     info->idxNum = 0;
     info->estimatedCost = 1e50;
     return(SQLITE_OK);
@@ -97,9 +98,12 @@ int rdfmDestroy(sqlite3_vtab *pVTab)
 
 int rdfmOpen(sqlite3_vtab *pVTab, sqlite3_vtab_cursor **ppCursor)
 {
+//printf("rdfmOpen\n");
   rdfm_cursor *pCur;
   pCur = sqlite3_malloc( sizeof(*pCur) );
-  if( pCur==0 ) return SQLITE_NOMEM;
+  if( pCur==0 ) 
+     return SQLITE_NOMEM;
+
   memset(pCur, 0, sizeof(*pCur));
   pCur->vtab = (rdfm_vtab *) pVTab;
   pCur->curRow = 0;
@@ -111,13 +115,15 @@ int rdfmClose(sqlite3_vtab_cursor *cur)
 {
     rdfm_cursor *pCur = (rdfm_cursor *) cur;
     sqlite3_free(pCur);
+//printf("rdfmClose\n");
     return(SQLITE_OK);
 }
 
 int rdfmFilter(sqlite3_vtab_cursor *cur, int idxNum, const char *idxStr,
               int argc, sqlite3_value **argv)
 {
-//XXX
+    rdfm_cursor *pCur = (rdfm_cursor *)cur;
+    pCur->curRow = 0;    
     return(SQLITE_OK);
 }
 
@@ -127,6 +133,7 @@ int rdfmNext(sqlite3_vtab_cursor *cur)
 {
   rdfm_cursor *pCur = (rdfm_cursor *)cur;
   pCur->curRow++;
+// printf("next row %d\n", pCur->curRow);
   return(SQLITE_OK);
 }
 
@@ -159,6 +166,9 @@ int rdfmColumn(sqlite3_vtab_cursor *cur, sqlite3_context* ctxt, int i)
 	     const char * const str = CHAR(STRING_ELT(col, pCur->curRow));
 	     sqlite3_result_text(ctxt, str, -1, SQLITE_TRANSIENT);
 	     break;
+         default:
+	     PROBLEM "unhandled type (%d) in rdfmColumn", TYPEOF(col)
+    	     WARN;
 	 }
       }
   }
@@ -221,7 +231,7 @@ struct sqlite3_module {
 static sqlite3_module RdataFrameModuleMethods  = {
     0,
     rdfmCreate,
-    rdfmConnect,
+    NULL,//    rdfmConnect,
     rdfmBestIndex,
     rdfmDisconnect,
     rdfmDestroy,
